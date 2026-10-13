@@ -1,0 +1,126 @@
+
+.custom-order-page {
+  min-height: 75vh;
+  padding: 48px 20px;
+  background: var(--ivory, #fbf5f0);
+}
+
+.custom-order-card {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 36px;
+  background: #fff;
+  border: 1px solid var(--border, #e4d5ce);
+  border-radius: 18px;
+  box-shadow: 0 12px 35px rgba(63, 7, 17, 0.07);
+}
+
+.custom-order-eyebrow {
+  color: var(--gold, #b28a55);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.custom-order-card h1 {
+  margin: 8px 0;
+  color: var(--primary, #5a0b18);
+  font-size: clamp(26px, 4vw, 36px);
+}
+
+.custom-order-intro,
+.custom-order-note {
+  color: var(--muted, #756466);
+  line-height: 1.6;
+}
+
+.custom-order-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.custom-order-card label {
+  margin-top: 10px;
+  color: var(--text, #332426);
+  font-weight: 600;
+}
+
+.custom-order-card input,
+.custom-order-card textarea,
+.custom-order-card select {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid var(--border, #e4d5ce);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--text, #332426);
+  font: inherit;
+  box-sizing: border-box;
+}
+
+.custom-order-card input:focus,
+.custom-order-card textarea:focus,
+.custom-order-card select:focus {
+  outline: 2px solid var(--blush, #ebd1c8);
+  border-color: var(--primary, #5a0b18);
+}
+
+.custom-order-card textarea {
+  resize: vertical;
+}
+
+.custom-order-submit,
+.custom-order-message button {
+  margin-top: 14px;
+  padding: 14px 18px;
+  border: none;
+  border-radius: 9px;
+  background: var(--primary, #5a0b18);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.custom-order-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.custom-order-message {
+  margin-top: 18px;
+  padding: 14px;
+  border-radius: 9px;
+  line-height: 1.5;
+}
+
+.custom-order-message.error {
+  background: #fff0ef;
+  color: #9d2525;
+}
+
+.custom-order-message.success {
+  background: #edf8ee;
+  color: #236b36;
+}
+
+.custom-order-message button {
+  display: block;
+}
+
+.custom-order-note {
+  margin-top: 20px;
+  font-size: 13px;
+}
+
+@media (max-width: 600px) {
+  .custom-order-page {
+    padding: 24px 12px;
+  }
+
+  .custom-order-card {
+    padding: 22px 18px;
+  }
+}

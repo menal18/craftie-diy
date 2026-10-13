@@ -1,0 +1,570 @@
+/* =========================================
+   ACCOUNT PAGE
+========================================= */
+
+.account-page {
+  min-height: calc(100vh - 80px);
+
+  padding: 60px 20px 90px;
+
+  background: var(--ivory);
+}
+
+.account-container {
+  width: 100%;
+  max-width: 1100px;
+
+  margin: 0 auto;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.account-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 30px;
+
+  margin-bottom: 35px;
+}
+
+.account-eyebrow {
+  display: block;
+
+  margin-bottom: 9px;
+
+  color: var(--gold);
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 2.5px;
+}
+
+.account-header h1 {
+  margin: 0;
+
+  color: var(--primary);
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: clamp(38px, 5vw, 52px);
+
+  font-weight: 500;
+}
+
+.account-header p {
+  margin: 12px 0 0;
+
+  color: var(--muted);
+
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.logout-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  min-height: 42px;
+
+  padding: 0 17px;
+
+  background: transparent;
+
+  color: var(--primary);
+
+  border: 1px solid var(--border);
+
+  border-radius: 6px;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.logout-button:hover {
+  background: var(--rose);
+
+  border-color: var(--blush);
+}
+
+
+/* =========================================
+   PROFILE CARD
+========================================= */
+
+.profile-card {
+  display: flex;
+  align-items: center;
+
+  gap: 20px;
+
+  padding: 28px;
+
+  margin-bottom: 20px;
+
+  background: var(--primary);
+
+  border-radius: 14px;
+
+  color: var(--white);
+
+  box-shadow:
+    0 15px 35px rgba(90, 11, 24, 0.12);
+}
+
+.profile-avatar {
+  width: 68px;
+  height: 68px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.13);
+
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.profile-content {
+  min-width: 0;
+}
+
+.profile-label {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: #dfbba9;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 2px;
+}
+
+.profile-content h2 {
+  margin: 0 0 5px;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 27px;
+
+  font-weight: 500;
+}
+
+.profile-content p {
+  margin: 0;
+
+  color: rgba(255, 255, 255, 0.75);
+
+  font-size: 13px;
+}
+
+
+/* =========================================
+   MAIN GRID
+========================================= */
+
+.account-grid {
+  display: grid;
+
+  grid-template-columns: 1.1fr 0.9fr;
+
+  gap: 20px;
+}
+
+
+/* =========================================
+   CARDS
+========================================= */
+
+.account-information,
+.account-links {
+  padding: 28px;
+
+  background: var(--white);
+
+  border: 1px solid var(--border);
+
+  border-radius: 14px;
+}
+
+
+/* =========================================
+   SECTION TITLE
+========================================= */
+
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 25px;
+
+  color: var(--primary);
+}
+
+.section-title > div > span {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: var(--gold);
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 1.8px;
+}
+
+.section-title h2 {
+  margin: 0;
+
+  color: var(--text);
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: 25px;
+
+  font-weight: 500;
+}
+
+
+/* =========================================
+   PROFILE FIELDS
+========================================= */
+
+.profile-fields {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 13px;
+}
+
+.profile-field {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  min-height: 76px;
+
+  padding: 14px;
+
+  background: var(--ivory);
+
+  border: 1px solid var(--border);
+
+  border-radius: 9px;
+}
+
+.field-icon {
+  width: 36px;
+  height: 36px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: var(--rose);
+
+  color: var(--primary);
+}
+
+.profile-field span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: var(--muted);
+
+  font-size: 10px;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.7px;
+}
+
+.profile-field strong {
+  display: block;
+
+  max-width: 180px;
+
+  overflow: hidden;
+
+  color: var(--text);
+
+  font-size: 13px;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================
+   QUICK LINKS
+========================================= */
+
+.account-link-card {
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  padding: 16px;
+
+  margin-bottom: 11px;
+
+  background: var(--ivory);
+
+  border: 1px solid var(--border);
+
+  border-radius: 9px;
+
+  color: var(--text);
+
+  text-decoration: none;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.account-link-card:last-child {
+  margin-bottom: 0;
+}
+
+.account-link-card:hover {
+  background: var(--rose);
+
+  border-color: var(--blush);
+
+  transform: translateX(3px);
+}
+
+.account-link-icon {
+  width: 40px;
+  height: 40px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: var(--white);
+
+  color: var(--primary);
+}
+
+.account-link-card > div:nth-child(2) {
+  flex: 1;
+
+  min-width: 0;
+}
+
+.account-link-card strong {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: var(--text);
+
+  font-size: 13px;
+}
+
+.account-link-card span {
+  display: block;
+
+  color: var(--muted);
+
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.account-link-card > svg {
+  flex-shrink: 0;
+
+  color: var(--primary);
+}
+
+
+/* =========================================
+   LOADING
+========================================= */
+
+.account-loading {
+  min-height: 500px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  color: var(--muted);
+}
+
+.account-loading p {
+  margin-top: 12px;
+
+  font-size: 14px;
+}
+
+.account-spinner {
+  color: var(--primary);
+
+  animation: account-spin 0.9s linear infinite;
+}
+
+@keyframes account-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================
+   ERROR
+========================================= */
+
+.account-error {
+  max-width: 550px;
+
+  margin: 80px auto;
+
+  padding: 40px;
+
+  text-align: center;
+
+  background: var(--white);
+
+  border: 1px solid var(--border);
+
+  border-radius: 14px;
+}
+
+.account-error h2 {
+  margin: 0 0 10px;
+
+  color: var(--primary);
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-weight: 500;
+}
+
+.account-error p {
+  margin: 0 0 22px;
+
+  color: var(--muted);
+
+  font-size: 14px;
+}
+
+.account-error button {
+  padding: 11px 20px;
+
+  background: var(--primary);
+
+  color: var(--white);
+
+  border: none;
+
+  border-radius: 5px;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 850px) {
+
+  .account-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+@media (max-width: 600px) {
+
+  .account-page {
+    padding: 40px 15px 70px;
+  }
+
+  .account-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .logout-button {
+    width: 100%;
+  }
+
+  .profile-card {
+    padding: 22px;
+  }
+
+  .profile-avatar {
+    width: 56px;
+    height: 56px;
+  }
+
+  .profile-content h2 {
+    font-size: 23px;
+  }
+
+  .account-information,
+  .account-links {
+    padding: 20px;
+  }
+
+  .profile-fields {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+@media (max-width: 400px) {
+
+  .profile-card {
+    align-items: flex-start;
+  }
+
+  .profile-content h2 {
+    font-size: 20px;
+  }
+
+}

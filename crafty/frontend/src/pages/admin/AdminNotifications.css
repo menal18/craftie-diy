@@ -1,0 +1,275 @@
+/* =========================================================
+   ADMIN NOTIFICATIONS
+========================================================= */
+
+.admin-notifications-page {
+  min-height: 100vh;
+  padding: 30px;
+  background: var(--ivory);
+  color: var(--text);
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.notification-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.notification-page-header h1 {
+  margin: 0;
+  color: var(--primary);
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.notification-page-header p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.notification-header-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: var(--cream);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================================================
+   ALERTS
+========================================================= */
+
+.notification-alert {
+  padding: 13px 16px;
+  border-radius: 10px;
+  margin-bottom: 18px;
+  font-size: 14px;
+}
+
+.notification-alert.error {
+  background: #fdeaea;
+  border: 1px solid #f1caca;
+  color: #a52222;
+}
+
+.notification-alert.success {
+  background: #eaf7ee;
+  border: 1px solid #ccebd6;
+  color: #24733d;
+}
+
+.notification-alert.warning {
+  background: #fff6e5;
+  border: 1px solid #f0d59d;
+  color: #76520b;
+}
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.notification-card {
+  max-width: 900px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.notification-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.notification-card-icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 11px;
+  background: var(--cream);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-card-header h2 {
+  margin: 0;
+  color: var(--primary);
+  font-size: 20px;
+}
+
+.notification-card-header p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.notification-form {
+  padding: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.notification-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.notification-field.full {
+  grid-column: 1 / -1;
+}
+
+.notification-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.notification-field input,
+.notification-field select,
+.notification-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 11px 12px;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--white);
+  outline: none;
+  font-family: inherit;
+}
+
+.notification-field input,
+.notification-field select {
+  height: 44px;
+}
+
+.notification-field textarea {
+  resize: vertical;
+  min-height: 130px;
+}
+
+.notification-field input:focus,
+.notification-field select:focus,
+.notification-field textarea:focus {
+  border-color: var(--primary);
+}
+
+/* =========================================================
+   RECIPIENT
+========================================================= */
+
+.recipient-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.recipient-option {
+  min-height: 65px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--white);
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.recipient-option:hover {
+  border-color: var(--primary);
+}
+
+.recipient-option.active {
+  border-color: var(--primary);
+  background: var(--cream);
+  color: var(--primary);
+}
+
+/* =========================================================
+   SUBMIT
+========================================================= */
+
+.notification-submit {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 5px;
+}
+
+.notification-submit button {
+  min-height: 45px;
+  padding: 0 22px;
+  border: none;
+  border-radius: 9px;
+  background: var(--primary);
+  color: var(--white);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.notification-submit button:hover {
+  background: var(--primary-dark);
+}
+
+.notification-submit button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 700px) {
+  .admin-notifications-page {
+    padding: 18px;
+  }
+
+  .notification-page-header h1 {
+    font-size: 26px;
+  }
+
+  .notification-form {
+    grid-template-columns: 1fr;
+  }
+
+  .notification-field.full {
+    grid-column: auto;
+  }
+
+  .notification-submit {
+    grid-column: auto;
+  }
+
+  .recipient-options {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,245 @@
+.collections-page,
+.bestsellers-page {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--ivory);
+}
+
+.catalog-header {
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 55px 6%;
+  background: var(--cream);
+  text-align: center;
+}
+
+.catalog-header > span {
+  color: var(--primary-light);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.catalog-header h1 {
+  margin: 14px 0;
+  color: var(--text);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(38px, 5vw, 58px);
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.catalog-header p {
+  max-width: 560px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.collections-content,
+.bestsellers-content {
+  max-width: 1450px;
+  min-height: 260px;
+  margin: 0 auto;
+  padding: 55px 5% 80px;
+  box-sizing: border-box;
+}
+
+.catalog-state {
+  padding: 75px 20px;
+  color: var(--muted);
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.catalog-error {
+  color: var(--primary);
+}
+
+.collections-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.collection-card {
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--border);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.collection-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(90, 11, 24, 0.08);
+}
+
+.collection-card > img,
+.collection-placeholder {
+  display: flex;
+  width: 100%;
+  height: 270px;
+  align-items: center;
+  justify-content: center;
+  object-fit: cover;
+  background: var(--blush);
+  color: var(--primary);
+}
+
+.collection-card-copy {
+  padding: 20px;
+}
+
+.collection-card-copy h2,
+.bestseller-card-copy h2 {
+  margin: 0 0 9px;
+  color: var(--text);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.collection-card-copy p {
+  min-height: 36px;
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.collection-card-copy span {
+  color: var(--primary);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.bestsellers-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.bestseller-card {
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--border);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.bestseller-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(90, 11, 24, 0.08);
+}
+
+.bestseller-image {
+  display: flex;
+  height: 300px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--cream);
+  color: var(--primary);
+}
+
+.bestseller-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.bestseller-card:hover .bestseller-image img {
+  transform: scale(1.04);
+}
+
+.bestseller-card-copy {
+  padding: 18px;
+}
+
+.bestseller-category {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--gold);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.bestseller-card-copy p {
+  display: -webkit-box;
+  min-height: 36px;
+  margin: 0 0 13px;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.bestseller-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.bestseller-card-footer span:last-child {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 500;
+}
+
+@media (max-width: 900px) {
+  .collections-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bestsellers-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .catalog-header {
+    min-height: 240px;
+    padding: 45px 6%;
+  }
+
+  .catalog-header h1 {
+    font-size: 36px;
+  }
+
+  .catalog-header p {
+    font-size: 13px;
+  }
+
+  .collections-content,
+  .bestsellers-content {
+    padding: 40px 6% 60px;
+  }
+
+  .collections-grid,
+  .bestsellers-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .collection-card > img,
+  .collection-placeholder {
+    height: 240px;
+  }
+
+  .bestseller-image {
+    height: 360px;
+  }
+}
