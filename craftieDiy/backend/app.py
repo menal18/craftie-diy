@@ -81,18 +81,22 @@ def create_app():
     jwt.init_app(app)
     mail.init_app(app)
     # cors(app)
+   
     cors(
-    app,
-    resources={
-        r"/api/*": {
-            "origins": [
-                "http://localhost:5173",
-                "http://127.0.0.1:5173",
-            ]
-        }
-    },
-    supports_credentials=True,
-)
+        app,
+        resources={
+            r"/api/*": {
+                "origins": [
+                    "http://localhost:5173",
+                    "http://127.0.0.1:5173",
+                    "https://craftie-diy.vercel.app",
+                    "https://craftie-by6f15c59-menals-projects.vercel.app",
+                ]
+            }
+        },
+        supports_credentials=True,
+    )
+
 
     @jwt.unauthorized_loader
     def handle_missing_token(reason):
