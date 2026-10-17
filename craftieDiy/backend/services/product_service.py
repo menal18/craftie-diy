@@ -413,8 +413,8 @@ def update_product(
         product.stock_quantity = stock_quantity
 
     # Image
-    if image_url is not None:
-        product.image_url = image_url
+    if isinstance(image_url, str) and image_url.strip():
+        product.image_url = image_url.strip()
 
     # Active status
     if is_active is not None:

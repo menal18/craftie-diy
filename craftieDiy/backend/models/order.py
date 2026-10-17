@@ -1,5 +1,23 @@
 from extensions import db
-from datetime import datetime
+from datetime import datetime, timezone
+
+
+def utc_now_naive():
+    """Return UTC without tzinfo for storage in MySQL DATETIME columns."""
+    return datetime.now(timezone.utc).replace(tzinfo=None)
+
+
+def utc_timestamp_iso(value):
+    """Serialize stored UTC timestamps with an explicit UTC offset."""
+    if value is None:
+        return None
+
+    if value.tzinfo is None:
+        value = value.replace(tzinfo=timezone.utc)
+    else:
+        value = value.astimezone(timezone.utc)
+
+    return value.isoformat().replace("+00:00", "Z")
 
 
 class Order(db.Model):
@@ -96,14 +114,14 @@ class Order(db.Model):
 
     created_at = db.Column(
         db.DateTime,
-        default=datetime.utcnow,
+        default=utc_now_naive,
         nullable=False
     )
 
     updated_at = db.Column(
         db.DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
+        default=utc_now_naive,
+        onupdate=utc_now_naive,
         nullable=False
     )
 

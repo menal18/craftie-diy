@@ -644,6 +644,9 @@
 .promo-input-row {
   display: flex;
   gap: 8px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .promo-input-row input {
@@ -676,6 +679,7 @@
   min-width: 78px;
   height: 44px;
   padding: 0 14px;
+  box-sizing: border-box;
   border: none;
   border-radius: 8px;
   background: var(--white);
@@ -1219,14 +1223,20 @@
 
   .promo-input-row {
     flex-direction: column;
+    gap: 8px;
   }
 
   .promo-input-row input {
+    flex: none;
     width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
 
   .promo-input-row button {
     width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
 
   .applied-promo {

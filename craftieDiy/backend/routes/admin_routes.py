@@ -6,7 +6,7 @@ from extensions import db
 from models.user import User
 from models.product import Product
 from models.category import Category
-from models.order import Order
+from models.order import Order, utc_timestamp_iso
 from models.custom_order import CustomOrder
 from models.payment import Payment
 from services.admin_service import (
@@ -256,15 +256,11 @@ def order_to_dict(order):
         # DATES
         # =====================================================
         "created_at": (
-            order.created_at.isoformat()
-            if order.created_at
-            else None
+            utc_timestamp_iso(order.created_at)
         ),
 
         "updated_at": (
-            order.updated_at.isoformat()
-            if order.updated_at
-            else None
+            utc_timestamp_iso(order.updated_at)
         ),
     }
 

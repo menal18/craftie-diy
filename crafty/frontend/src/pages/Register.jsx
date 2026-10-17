@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 
 import { registerUser } from "../services/authService";
-import craftieLogo from "../assets/Craftie-Diy-Logo.png";
 
 import "./Auth.css";
 
@@ -110,265 +109,153 @@ const Register = () => {
   };
 
   return (
-    <main className="auth-page">
-
+    <main className="auth-page auth-register-page">
       <div className="auth-wrapper">
-
-        {/* BRAND */}
-
         <section className="auth-brand">
-
           <div className="auth-brand-content">
-
-            <span className="auth-brand-small">
-              CRAFTIEDIY
-            </span>
-
+            <span className="auth-brand-small">CRAFTIEDIY · HANDMADE WITH LOVE</span>
             <h1>
-              Made for
+              Made with care,
               <br />
-              <em>your story.</em>
+              <em>made for your story.</em>
             </h1>
-
             <p>
-              Join our creative community and
-              discover unique handmade products
-              created with care and imagination.
+              Join a community that celebrates thoughtful gifting, little
+              details and the joy of something made by hand.
             </p>
-
-            <div className="auth-brand-line"></div>
-
-            <span className="auth-brand-note">
-              Handcrafted • Thoughtful • Unique
-            </span>
-
+            <span className="auth-brand-note">HANDCRAFTED · THOUGHTFUL · UNIQUE</span>
           </div>
-
         </section>
-
-        {/* REGISTER */}
 
         <section className="auth-form-panel">
-
           <div className="auth-form-container">
+            <div className="auth-form-card">
+              <div className="auth-heading">
+                <span className="auth-eyebrow">JOIN THE CRAFTIE COMMUNITY</span>
+                <h1>Create your account</h1>
+                <p>
+                  Save your favourite finds and keep every thoughtful order
+                  close at hand.
+                </p>
+              </div>
 
-            {/* <div className="auth-mobile-brand">
-              <span>CRAFTIEDIY</span>
-            </div> */}
+              {error && (
+                <div className="auth-error" role="alert" aria-live="polite">
+                  {error}
+                </div>
+              )}
 
-            <div className="auth-mobile-brand">
-  <img
-    src={craftieLogo}
-    alt="Craftie DIY"
-    className="auth-logo"
-  />
-</div>
-            <div className="auth-heading">
+              {success && (
+                <div className="auth-success" role="status" aria-live="polite">
+                  {success}
+                </div>
+              )}
 
-              <span className="auth-eyebrow">
-                CREATE ACCOUNT
-              </span>
+              <form className="auth-form" onSubmit={handleSubmit}>
+                <div className="auth-field">
+                  <label htmlFor="name">Full Name</label>
+                  <div className="auth-input-wrapper">
+                    <UserRound size={18} aria-hidden="true" />
+                    <input
+                      id="name"
+                      type="text"
+                      name="name"
+                      value={form.name}
+                      onChange={handleChange}
+                      placeholder="Your full name"
+                      autoComplete="name"
+                    />
+                  </div>
+                </div>
 
-              <h2>
-                Start your journey
-              </h2>
+                <div className="auth-field">
+                  <label htmlFor="email">Email Address</label>
+                  <div className="auth-input-wrapper">
+                    <Mail size={18} aria-hidden="true" />
+                    <input
+                      id="email"
+                      type="email"
+                      name="email"
+                      value={form.email}
+                      onChange={handleChange}
+                      placeholder="you@example.com"
+                      autoComplete="email"
+                    />
+                  </div>
+                </div>
 
-              <p>
-                Create an account to save your
-                favorites and manage your orders.
+                <div className="auth-field">
+                  <label htmlFor="phone">Phone Number</label>
+                  <div className="auth-input-wrapper">
+                    <Phone size={18} aria-hidden="true" />
+                    <input
+                      id="phone"
+                      type="tel"
+                      name="phone"
+                      value={form.phone}
+                      onChange={handleChange}
+                      placeholder="Your phone number"
+                      autoComplete="tel"
+                    />
+                  </div>
+                </div>
+
+                <div className="auth-field">
+                  <label htmlFor="password">Password</label>
+                  <div className="auth-input-wrapper">
+                    <LockKeyhole size={18} aria-hidden="true" />
+                    <input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      value={form.password}
+                      onChange={handleChange}
+                      placeholder="Create a password"
+                      autoComplete="new-password"
+                    />
+                    <button
+                      type="button"
+                      className="password-toggle"
+                      onClick={() => setShowPassword(!showPassword)}
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="auth-submit"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <span className="auth-spinner"></span>
+                      Creating Account...
+                    </>
+                  ) : (
+                    <>
+                      Create Account
+                      <ArrowRight size={18} />
+                    </>
+                  )}
+                </button>
+              </form>
+
+              <p className="auth-switch">
+                Already have an account? <Link to="/login">Sign in.</Link>
               </p>
-
             </div>
 
-            {error && (
-              <div className="auth-error">
-                {error}
-              </div>
-            )}
-
-            {success && (
-              <div className="auth-success">
-                {success}
-              </div>
-            )}
-
-            <form
-              className="auth-form"
-              onSubmit={handleSubmit}
-            >
-
-              {/* NAME */}
-
-              <div className="auth-field">
-
-                <label htmlFor="name">
-                  Full Name
-                </label>
-
-                <div className="auth-input-wrapper">
-
-                  <UserRound size={18} />
-
-                  <input
-                    id="name"
-                    type="text"
-                    name="name"
-                    value={form.name}
-                    onChange={handleChange}
-                    placeholder="Your full name"
-                    autoComplete="name"
-                  />
-
-                </div>
-
-              </div>
-
-              {/* EMAIL */}
-
-              <div className="auth-field">
-
-                <label htmlFor="email">
-                  Email Address
-                </label>
-
-                <div className="auth-input-wrapper">
-
-                  <Mail size={18} />
-
-                  <input
-                    id="email"
-                    type="email"
-                    name="email"
-                    value={form.email}
-                    onChange={handleChange}
-                    placeholder="you@example.com"
-                    autoComplete="email"
-                  />
-
-                </div>
-
-              </div>
-
-              {/* PHONE */}
-
-              <div className="auth-field">
-
-                <label htmlFor="phone">
-                  Phone Number
-                </label>
-
-                <div className="auth-input-wrapper">
-
-                  <Phone size={18} />
-
-                  <input
-                    id="phone"
-                    type="tel"
-                    name="phone"
-                    value={form.phone}
-                    onChange={handleChange}
-                    placeholder="Your phone number"
-                    autoComplete="tel"
-                  />
-
-                </div>
-
-              </div>
-
-              {/* PASSWORD */}
-
-              <div className="auth-field">
-
-                <label htmlFor="password">
-                  Password
-                </label>
-
-                <div className="auth-input-wrapper">
-
-                  <LockKeyhole size={18} />
-
-                  <input
-                    id="password"
-                    type={
-                      showPassword
-                        ? "text"
-                        : "password"
-                    }
-                    name="password"
-                    value={form.password}
-                    onChange={handleChange}
-                    placeholder="Create a password"
-                    autoComplete="new-password"
-                  />
-
-                  <button
-                    type="button"
-                    className="password-toggle"
-                    onClick={() =>
-                      setShowPassword(
-                        !showPassword
-                      )
-                    }
-                  >
-                    {showPassword ? (
-                      <EyeOff size={18} />
-                    ) : (
-                      <Eye size={18} />
-                    )}
-                  </button>
-
-                </div>
-
-              </div>
-
-              {/* SUBMIT */}
-
-              <button
-                type="submit"
-                className="auth-submit"
-                disabled={loading}
-              >
-
-                {loading ? (
-                  <>
-                    <span className="auth-spinner"></span>
-                    Creating Account...
-                  </>
-                ) : (
-                  <>
-                    Create Account
-                    <ArrowRight size={18} />
-                  </>
-                )}
-
-              </button>
-
-            </form>
-
-            <div className="auth-divider">
-              <span>ALREADY A MEMBER?</span>
-            </div>
-
-            <Link
-              to="/login"
-              className="auth-secondary-btn"
-            >
-              Sign In
-            </Link>
-
-            <Link
-              to="/"
-              className="auth-back-home"
-            >
+            <Link to="/" className="auth-back-home">
               Continue as guest
             </Link>
-
           </div>
-
         </section>
-
       </div>
-
     </main>
   );
 };

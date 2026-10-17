@@ -62,19 +62,25 @@ function formatDate(date) {
     day: "2-digit",
     month: "short",
     year: "numeric",
+    timeZone: "Asia/Kolkata",
   });
 }
-
 
 function formatDateTime(date) {
   if (!date) return "-";
 
-  return new Date(date).toLocaleString("en-IN", {
+  const parsedDate = new Date(date);
+
+  if (Number.isNaN(parsedDate.getTime())) return "-";
+
+  return parsedDate.toLocaleString("en-IN", {
     day: "2-digit",
     month: "short",
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+    hour12: true,
+    timeZone: "Asia/Kolkata",
   });
 }
 

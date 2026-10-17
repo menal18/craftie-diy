@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   ArrowLeft,
@@ -110,6 +110,37 @@ const AdminProducts = () => {
   const [form, setForm] = useState(emptyForm);
 
   const [productImage, setProductImage] = useState(null);
+  const [productImagePreview, setProductImagePreview] = useState("");
+  const productImagePreviewRef = useRef("");
+  const productImageInputRef = useRef(null);
+
+  const clearProductImage = () => {
+    if (productImagePreviewRef.current) {
+      URL.revokeObjectURL(productImagePreviewRef.current);
+      productImagePreviewRef.current = "";
+    }
+
+    setProductImage(null);
+    setProductImagePreview("");
+
+    if (productImageInputRef.current) {
+      productImageInputRef.current.value = "";
+    }
+  };
+
+  const handleProductImageChange = (e) => {
+    const image = e.target.files?.[0] || null;
+
+    if (productImagePreviewRef.current) {
+      URL.revokeObjectURL(productImagePreviewRef.current);
+    }
+
+    const previewUrl = image ? URL.createObjectURL(image) : "";
+    productImagePreviewRef.current = previewUrl;
+
+    setProductImage(image);
+    setProductImagePreview(previewUrl);
+  };
 
 
   // =========================================================
@@ -254,6 +285,12 @@ const AdminProducts = () => {
 
   }, []);
 
+  useEffect(() => () => {
+    if (productImagePreviewRef.current) {
+      URL.revokeObjectURL(productImagePreviewRef.current);
+    }
+  }, []);
+
 
   // =========================================================
   // FORM CHANGE
@@ -295,7 +332,7 @@ const AdminProducts = () => {
       ...emptyForm,
     });
 
-    setProductImage(null);
+    clearProductImage();
 
     setError("");
     setSuccess("");
@@ -334,7 +371,7 @@ const AdminProducts = () => {
 
     });
 
-    setProductImage(null);
+    clearProductImage();
 
     setError("");
     setSuccess("");
@@ -361,7 +398,7 @@ const AdminProducts = () => {
       ...emptyForm,
     });
 
-    setProductImage(null);
+    clearProductImage();
   };
 
 
@@ -530,7 +567,7 @@ const AdminProducts = () => {
 
       await loadProducts();
 
-      setProductImage(null);
+      clearProductImage();
 
       closeModal();
 
@@ -1472,21 +1509,41 @@ const AdminProducts = () => {
 
               <div className="form-group full">
 
-                <label>
-                  Product Image
+                {(productImagePreview ||
+                  (editingProduct &&
+                    getProductImageSource(editingProduct))) && (
+                  <div className="product-image-preview">
+                    <span className="product-image-preview-label">
+                      {productImage
+                        ? "Image Preview"
+                        : "Current Image"}
+                    </span>
+                    <img
+                      src={
+                        productImagePreview ||
+                        getProductImageSource(editingProduct)
+                      }
+                      alt={
+                        productImage
+                          ? "Selected product image preview"
+                          : `${editingProduct.name} current image`
+                      }
+                    />
+                  </div>
+                )}
+
+                <label htmlFor="product-image">
+                  {editingProduct
+                    ? "Choose New Image (optional)"
+                    : "Product Image"}
                 </label>
 
                 <input
+                  ref={productImageInputRef}
+                  id="product-image"
                   type="file"
                   accept="image/png,image/jpeg,image/webp"
-                  onChange={(e) => {
-
-                    setProductImage(
-                      e.target.files[0] ||
-                      null
-                    );
-
-                  }}
+                  onChange={handleProductImageChange}
                 />
 
                 {productImage && (

@@ -701,7 +701,7 @@
 #     }
 
 from extensions import db
-from models.order import Order
+from models.order import Order, utc_now_naive, utc_timestamp_iso
 from models.order_item import OrderItem
 from models.cart import Cart
 from models.cart_item import CartItem
@@ -817,15 +817,11 @@ def order_to_dict(order):
         "items": items,
 
         "created_at": (
-            order.created_at.isoformat()
-            if order.created_at
-            else None
+            utc_timestamp_iso(order.created_at)
         ),
 
         "updated_at": (
-            order.updated_at.isoformat()
-            if order.updated_at
-            else None
+            utc_timestamp_iso(order.updated_at)
         )
     }
 
@@ -1117,7 +1113,7 @@ def cancel_user_order(user_id, order_id):
     # -----------------------------------------------------
 
     order.order_status = "cancelled"
-    order.updated_at = datetime.utcnow()
+    order.updated_at = utc_now_naive()
 
     db.session.commit()
 
@@ -1159,7 +1155,7 @@ def update_order_status(
         return None, "Invalid order status"
 
     order.order_status = new_status
-    order.updated_at = datetime.utcnow()
+    order.updated_at = utc_now_naive()
 
     db.session.commit()
 
