@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
-
+import os
+from werkzeug.security import generate_password_hash
 from config import Config
 from extensions import db, jwt, cors,mail
 from models.user import User
@@ -36,6 +37,40 @@ from routes.notification_routes import notification_bp
 from routes.admin_routes import admin_bp
 from routes.contact_message_routes import contact_message_bp
 from routes.promotion_routes import promotion_bp
+
+
+
+def seed_admin(app):
+    email = (os.getenv("ADMIN_EMAIL") or "").strip().lower()
+    password = os.getenv("ADMIN_PASSWORD")
+    name = (os.getenv("ADMIN_NAME") or "Admin").strip()
+
+    if not email or not password:
+        app.logger.warning("Admin seeding skipped: missing credentials.")
+        return
+
+    try:
+        existing_user = User.query.filter_by(email=email).first()
+
+        if existing_user:
+            app.logger.warning(
+                "Admin seeding skipped: email already exists."
+            )
+            return
+
+        admin = User(
+            name=name,
+            email=email,
+            password_hash=generate_password_hash(password),
+            role="admin",
+        )
+        db.session.add(admin)
+        db.session.commit()
+        app.logger.info("Admin account created successfully.")
+
+    except Exception:
+        db.session.rollback()
+        app.logger.exception("Admin seeding failed.")
 
 def create_app():
     app = Flask(__name__)
@@ -113,6 +148,7 @@ def create_app():
         })
     with app.app_context():
         db.create_all()
+        seed_admin(app)
 
     return app
 
