@@ -27,6 +27,11 @@ import {
   cancelOrder,
 } from "../services/orderService";
 import {
+  getMyCustomOrders,
+  acceptCustomOrderQuote,
+  rejectCustomOrderQuote,
+} from "../services/customOrderService";
+import {
   getProductReviews,
   addReview,
   updateReview,
@@ -61,8 +66,59 @@ const getOrderItemImage = (item) => {
   }
 };
 
+const getCustomOrderReferenceImageUrl = (imageUrl) => {
+  if (typeof imageUrl !== "string" || !imageUrl.trim()) return null;
+
+  const value = imageUrl.trim();
+  if (/^(data:|blob:)/i.test(value)) return value;
+
+  try {
+    const absoluteUrl = new URL(value);
+    return ["http:", "https:"].includes(absoluteUrl.protocol)
+      ? absoluteUrl.href
+      : null;
+  } catch {
+    try {
+      const backendOrigin = new URL(
+        api.defaults.baseURL || window.location.origin,
+        window.location.origin,
+      ).origin;
+      const resolvedUrl = new URL(value, `${backendOrigin}/`);
+
+      return ["http:", "https:"].includes(resolvedUrl.protocol)
+        ? resolvedUrl.href
+        : null;
+    } catch {
+      return null;
+    }
+  }
+};
+
 const getOrderItems = (order) =>
   Array.isArray(order?.items) ? order.items : [];
+
+const CustomOrderReferenceImage = ({ imageUrl, title }) => {
+  const resolvedImageUrl = getCustomOrderReferenceImageUrl(imageUrl);
+  const [failedImageUrl, setFailedImageUrl] = useState("");
+
+  if (!resolvedImageUrl || failedImageUrl === resolvedImageUrl) {
+    return (
+      <div className="custom-order-reference-image-fallback" role="img" aria-label="Reference image unavailable">
+        Reference image unavailable
+      </div>
+    );
+  }
+
+  return (
+    <img
+      className="custom-order-reference-image"
+      src={resolvedImageUrl}
+      alt={`Reference for ${title || "custom order"}`}
+      loading="lazy"
+      onError={() => setFailedImageUrl(resolvedImageUrl)}
+    />
+  );
+};
 
 const OrderItemImage = ({ item, productName }) => {
   const imageUrl = getOrderItemImage(item);
@@ -137,6 +193,11 @@ const getReviewErrorMessage = (error) => {
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
+  const [customOrders, setCustomOrders] = useState([]);
+  const [customOrdersLoading, setCustomOrdersLoading] = useState(true);
+  const [customOrdersError, setCustomOrdersError] = useState("");
+  const [updatingQuoteOrderId, setUpdatingQuoteOrderId] = useState(null);
+  const [customOrderFeedback, setCustomOrderFeedback] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
@@ -156,8 +217,42 @@ const Orders = () => {
   const [orderFeedback, setOrderFeedback] = useState(null);
   const mountedRef = useRef(false);
   const ordersRequestIdRef = useRef(0);
+  const customOrdersRequestIdRef = useRef(0);
   const reviewsRequestIdRef = useRef(0);
   const trackingRequestIdRef = useRef(0);
+
+  const loadCustomOrders = useCallback(async () => {
+    const requestId = ++customOrdersRequestIdRef.current;
+    try {
+      if (mountedRef.current) {
+        setCustomOrdersLoading(true);
+        setCustomOrdersError("");
+      }
+
+      const response = await getMyCustomOrders();
+      if (!Array.isArray(response?.custom_orders)) {
+        throw new Error("The server returned an unexpected custom orders response.");
+      }
+      if (!mountedRef.current || requestId !== customOrdersRequestIdRef.current) {
+        return;
+      }
+
+      setCustomOrders(response.custom_orders);
+    } catch (customOrdersLoadError) {
+      console.error("Failed to load custom orders:", customOrdersLoadError);
+      if (mountedRef.current && requestId === customOrdersRequestIdRef.current) {
+        setCustomOrdersError(
+          customOrdersLoadError?.response?.data?.message ||
+            customOrdersLoadError?.message ||
+            "Unable to load your custom order quotations. Please try again.",
+        );
+      }
+    } finally {
+      if (mountedRef.current && requestId === customOrdersRequestIdRef.current) {
+        setCustomOrdersLoading(false);
+      }
+    }
+  }, []);
 
   const loadProductReviews = useCallback(async (orderList) => {
     const requestId = ++reviewsRequestIdRef.current;
@@ -313,14 +408,16 @@ const Orders = () => {
   useEffect(() => {
     mountedRef.current = true;
     void loadOrders();
+    void loadCustomOrders();
 
     return () => {
       mountedRef.current = false;
       ordersRequestIdRef.current += 1;
+      customOrdersRequestIdRef.current += 1;
       reviewsRequestIdRef.current += 1;
       trackingRequestIdRef.current += 1;
     };
-  }, [loadOrders]);
+  }, [loadCustomOrders, loadOrders]);
 
   const toggleOrder = (orderId) => {
     setExpandedOrder((current) =>
@@ -442,6 +539,67 @@ const Orders = () => {
       }
     } finally {
       if (mountedRef.current) setCancellingOrder(null);
+    }
+  };
+
+  const handleQuoteDecision = async (customOrder, decision) => {
+    if (updatingQuoteOrderId !== null) return;
+
+    if (
+      decision === "reject" &&
+      !window.confirm("Are you sure you want to reject this quotation?")
+    ) {
+      return;
+    }
+
+    const expectedStatus = decision === "accept" ? "accepted" : "rejected";
+
+    try {
+      setUpdatingQuoteOrderId(customOrder.id);
+      setCustomOrderFeedback(null);
+
+      const response =
+        decision === "accept"
+          ? await acceptCustomOrderQuote(customOrder.id)
+          : await rejectCustomOrderQuote(customOrder.id);
+      const updatedCustomOrder = response?.custom_order;
+
+      if (
+        !updatedCustomOrder ||
+        String(updatedCustomOrder.id) !== String(customOrder.id) ||
+        updatedCustomOrder.status !== expectedStatus
+      ) {
+        throw new Error("The server returned an unexpected quotation response.");
+      }
+
+      if (!mountedRef.current) return;
+
+      setCustomOrders((currentOrders) =>
+        currentOrders.map((order) =>
+          String(order.id) === String(customOrder.id)
+            ? updatedCustomOrder
+            : order,
+        ),
+      );
+      setCustomOrderFeedback({
+        type: "success",
+        message:
+          response.message ||
+          `Quotation ${decision === "accept" ? "accepted" : "rejected"} successfully.`,
+      });
+    } catch (quoteDecisionError) {
+      console.error(`Failed to ${decision} custom order quotation:`, quoteDecisionError);
+      if (mountedRef.current) {
+        setCustomOrderFeedback({
+          type: "error",
+          message:
+            quoteDecisionError?.response?.data?.message ||
+            quoteDecisionError?.message ||
+            `Unable to ${decision} this quotation. Please try again.`,
+        });
+      }
+    } finally {
+      if (mountedRef.current) setUpdatingQuoteOrderId(null);
     }
   };
 
@@ -677,7 +835,10 @@ const Orders = () => {
           <button
             type="button"
             className="refresh-orders-btn"
-            onClick={() => loadOrders(true)}
+            onClick={() => {
+              void loadOrders(true);
+              void loadCustomOrders();
+            }}
             disabled={refreshing}
           >
             <RefreshCw
@@ -717,6 +878,136 @@ const Orders = () => {
             {orderFeedback.message}
           </div>
         )}
+
+        <section className="custom-order-quotations">
+          <div className="custom-order-quotations-heading">
+            <div>
+              <p className="orders-eyebrow">MADE JUST FOR YOU</p>
+              <h2>Custom Order Quotations</h2>
+            </div>
+          </div>
+
+          {customOrderFeedback && (
+            <div
+              className={`orders-action-feedback orders-action-feedback-${customOrderFeedback.type}`}
+              role={customOrderFeedback.type === "error" ? "alert" : "status"}
+            >
+              {customOrderFeedback.message}
+            </div>
+          )}
+
+          {customOrdersLoading ? (
+            <div className="custom-order-quotations-state" role="status">
+              <div className="orders-spinner" />
+              <p>Loading your custom order quotations...</p>
+            </div>
+          ) : customOrdersError ? (
+            <div className="custom-order-quotations-error" role="alert">
+              <p>{customOrdersError}</p>
+              <button type="button" onClick={() => void loadCustomOrders()}>
+                Try Again
+              </button>
+            </div>
+          ) : customOrders.length === 0 ? (
+            <p className="custom-order-quotations-empty">
+              You don't have any custom order quotations yet.
+            </p>
+          ) : (
+            <div className="custom-order-quotations-grid">
+              {customOrders.map((customOrder) => {
+                const status = String(customOrder.status || "pending")
+                  .trim()
+                  .toLowerCase();
+                const quotedPrice = Number(customOrder.estimated_price);
+                const isUpdating =
+                  String(updatingQuoteOrderId) === String(customOrder.id);
+
+                return (
+                  <article
+                    className="custom-order-quotation-card"
+                    key={customOrder.id}
+                  >
+                    <div className="custom-order-quotation-card-header">
+                      <div>
+                        <p className="order-label">
+                          Custom Order #{customOrder.id}
+                        </p>
+                        <h3>{customOrder.title}</h3>
+                      </div>
+                      <span
+                        className={`custom-order-quotation-status custom-order-quotation-status-${status}`}
+                      >
+                        {formatStatus(status)}
+                      </span>
+                    </div>
+
+                    <CustomOrderReferenceImage
+                      imageUrl={customOrder.reference_image_url}
+                      title={customOrder.title}
+                    />
+
+                    <dl className="custom-order-quotation-details">
+                      <div>
+                        <dt>Description</dt>
+                        <dd>{customOrder.description || "Not provided"}</dd>
+                      </div>
+                      <div>
+                        <dt>Customization details</dt>
+                        <dd>
+                          {customOrder.customization_details || "Not provided"}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Quantity</dt>
+                        <dd>{customOrder.quantity ?? "-"}</dd>
+                      </div>
+                      <div>
+                        <dt>Quoted price</dt>
+                        <dd className="custom-order-quotation-price">
+                          {Number.isFinite(quotedPrice)
+                            ? `₹${quotedPrice.toLocaleString("en-IN", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              })}`
+                            : "Not quoted"}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Admin notes</dt>
+                        <dd>{customOrder.admin_notes || "No notes provided"}</dd>
+                      </div>
+                    </dl>
+
+                    {status === "quoted" && (
+                      <div className="custom-order-quotation-actions">
+                        <button
+                          type="button"
+                          className="custom-order-accept-quote"
+                          onClick={() =>
+                            void handleQuoteDecision(customOrder, "accept")
+                          }
+                          disabled={updatingQuoteOrderId !== null}
+                        >
+                          {isUpdating ? "Submitting..." : "Accept Quote"}
+                        </button>
+                        <button
+                          type="button"
+                          className="custom-order-reject-quote"
+                          onClick={() =>
+                            void handleQuoteDecision(customOrder, "reject")
+                          }
+                          disabled={updatingQuoteOrderId !== null}
+                        >
+                          {isUpdating ? "Submitting..." : "Reject Quote"}
+                        </button>
+                      </div>
+                    )}
+                  </article>
+                );
+              })}
+            </div>
+          )}
+        </section>
 
         {/* Empty */}
         {!error && orders.length === 0 && (

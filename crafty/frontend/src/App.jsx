@@ -16,6 +16,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import OrderSuccess from "./pages/OrderSuccess";
 import Orders from "./pages/Orders";
+import Notifications from "./pages/Notifications";
 import Account from "./pages/Account";
 import Addresses from "./pages/Addressess";
 import CustomOrderForm from "./pages/CustomOrderForm";
@@ -100,6 +101,11 @@ function AppContent() {
         <Route
           path="/orders"
           element={<Orders />}
+        />
+
+        <Route
+          path="/notifications"
+          element={<Notifications />}
         />
 
         <Route

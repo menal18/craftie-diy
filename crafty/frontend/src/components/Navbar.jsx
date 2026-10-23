@@ -6,6 +6,7 @@ import {
   Heart,
   ShoppingBag,
   User,
+  Bell,
   Menu,
   X,
   ArrowRight,
@@ -17,6 +18,7 @@ import "./Navbar.css";
 
 import { useCart } from "../context/CartContext";
 import { searchProducts } from "../services/productService";
+import { getMyUnreadNotificationCount } from "../services/notificationService";
 
 import craftieLogo from "../assets/Craftie-Diy-Logo.png";
 
@@ -39,6 +41,7 @@ function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(
     Boolean(localStorage.getItem("token"))
   );
+  const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
 
   const { cartCount } = useCart();
 
@@ -65,11 +68,53 @@ function Navbar() {
     checkLogin();
 
     window.addEventListener("storage", checkLogin);
+    window.addEventListener("auth-change", checkLogin);
 
     return () => {
       window.removeEventListener("storage", checkLogin);
+      window.removeEventListener("auth-change", checkLogin);
     };
   }, [location.pathname]);
+
+  useEffect(() => {
+    let active = true;
+
+    const loadUnreadCount = async () => {
+      if (!localStorage.getItem("token")) {
+        if (active) setUnreadNotificationCount(0);
+        return;
+      }
+
+      try {
+        const response = await getMyUnreadNotificationCount();
+        if (active) {
+          setUnreadNotificationCount(Number(response?.unread_count) || 0);
+        }
+      } catch (error) {
+        if (active) {
+          console.error("Unable to load unread notification count:", error);
+        }
+      }
+    };
+
+    const refreshOnVisible = () => {
+      if (document.visibilityState === "visible") {
+        void loadUnreadCount();
+      }
+    };
+
+    void loadUnreadCount();
+    const intervalId = window.setInterval(loadUnreadCount, 60000);
+    window.addEventListener("notifications-updated", loadUnreadCount);
+    document.addEventListener("visibilitychange", refreshOnVisible);
+
+    return () => {
+      active = false;
+      window.clearInterval(intervalId);
+      window.removeEventListener("notifications-updated", loadUnreadCount);
+      document.removeEventListener("visibilitychange", refreshOnVisible);
+    };
+  }, [isLoggedIn, location.pathname]);
 
 
   useEffect(() => {
@@ -309,6 +354,27 @@ function Navbar() {
 
             {/* ACCOUNT */}
 
+            {isLoggedIn && (
+              <Link
+                to="/notifications"
+                className="nav-icon-link notification-icon"
+                aria-label={
+                  unreadNotificationCount > 0
+                    ? `Notifications, ${unreadNotificationCount} unread`
+                    : "Notifications"
+                }
+              >
+                <Bell size={18} />
+                {unreadNotificationCount > 0 && (
+                  <span className="notification-count">
+                    {unreadNotificationCount > 99
+                      ? "99+"
+                      : unreadNotificationCount}
+                  </span>
+                )}
+              </Link>
+            )}
+
             <Link
               to={isLoggedIn ? "/account" : "/login"}
               className="nav-icon-link"
@@ -511,6 +577,24 @@ function Navbar() {
             >
               My Account
             </Link>
+
+            {isLoggedIn && (
+              <Link
+                to="/notifications"
+                className="mobile-nav-notifications"
+                onClick={() => setMobileMenu(false)}
+              >
+                <Bell size={17} aria-hidden="true" />
+                Notifications
+                {unreadNotificationCount > 0 && (
+                  <span className="mobile-notification-count">
+                    {unreadNotificationCount > 99
+                      ? "99+"
+                      : unreadNotificationCount}
+                  </span>
+                )}
+              </Link>
+            )}
 
             <Link
               to="/wishlist"

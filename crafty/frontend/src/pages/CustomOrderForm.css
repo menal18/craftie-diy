@@ -115,6 +115,213 @@
   font-size: 13px;
 }
 
+.custom-order-delivery {
+  margin: 26px 0;
+  padding: 20px;
+  border: 1px solid var(--border, #e4d5ce);
+  border-radius: 12px;
+  background: var(--ivory, #fbf5f0);
+}
+
+.custom-order-delivery-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+  color: var(--primary, #5a0b18);
+}
+
+.custom-order-delivery-heading > svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.custom-order-delivery-heading h2 {
+  margin: 0 0 4px;
+  color: var(--primary, #5a0b18);
+  font-size: 20px;
+}
+
+.custom-order-delivery-heading p {
+  margin: 0;
+  color: var(--muted, #756466);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.custom-order-address-list {
+  display: grid;
+  gap: 10px;
+}
+
+.custom-order-address-option {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+  padding: 15px;
+  border: 1px solid var(--border, #e4d5ce);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--text, #332426);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.custom-order-address-option:hover,
+.custom-order-address-option.selected {
+  border-color: var(--primary, #5a0b18);
+  background: #fffafb;
+}
+
+.custom-order-address-radio {
+  display: flex;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+  border: 1px solid var(--border, #e4d5ce);
+  border-radius: 50%;
+}
+
+.custom-order-address-option.selected .custom-order-address-radio {
+  border-color: var(--primary, #5a0b18);
+}
+
+.custom-order-address-radio > span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--primary, #5a0b18);
+}
+
+.custom-order-address-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.custom-order-address-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.custom-order-address-top strong {
+  color: var(--text, #332426);
+}
+
+.custom-order-default-badge {
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: var(--cream, #f5e9e1);
+  color: var(--primary, #5a0b18);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.custom-order-address-phone {
+  margin-top: 3px;
+  color: var(--muted, #756466);
+}
+
+.custom-order-address-message {
+  margin: 0 0 12px;
+  color: var(--muted, #756466);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.custom-order-add-address,
+.custom-order-add-address-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 14px;
+  border: 1px solid var(--primary, #5a0b18);
+  border-radius: 8px;
+  background: var(--primary, #5a0b18);
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.custom-order-add-address {
+  margin-top: 14px;
+}
+
+.custom-order-add-address:hover,
+.custom-order-add-address-submit:hover:not(:disabled) {
+  background: var(--primary-dark, #3f0711);
+}
+
+.custom-order-address-form {
+  margin-top: 16px !important;
+  padding-top: 16px;
+  border-top: 1px solid var(--border, #e4d5ce);
+}
+
+.custom-order-address-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.custom-order-address-fields > div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.custom-order-address-fields > .full-width {
+  grid-column: 1 / -1;
+}
+
+.custom-order-address-fields label {
+  margin-top: 0 !important;
+  font-size: 12px;
+}
+
+.custom-order-address-fields label span {
+  margin-left: 4px;
+  color: var(--muted, #756466);
+  font-weight: 400;
+}
+
+.custom-order-default-address {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.custom-order-default-address input {
+  width: auto;
+  accent-color: var(--primary, #5a0b18);
+}
+
+.custom-order-add-address-submit {
+  margin-top: 4px;
+}
+
+.custom-order-add-address-submit:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
 @media (max-width: 600px) {
   .custom-order-page {
     padding: 24px 12px;
@@ -122,5 +329,22 @@
 
   .custom-order-card {
     padding: 22px 18px;
+  }
+
+  .custom-order-delivery {
+    padding: 15px;
+  }
+
+  .custom-order-address-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .custom-order-address-fields > .full-width {
+    grid-column: auto;
+  }
+
+  .custom-order-add-address,
+  .custom-order-add-address-submit {
+    width: 100%;
   }
 }

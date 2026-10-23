@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from datetime import datetime
 from decimal import Decimal, InvalidOperation
@@ -7,6 +7,7 @@ from extensions import db
 from models.payment import Payment
 from models.order import Order
 from models.user import User
+from services.notification_service import create_payment_notification
 
 
 payment_bp = Blueprint(
@@ -456,6 +457,7 @@ def update_payment_status(payment_id):
             "allowed_statuses": allowed_statuses
         }), 400
 
+    previous_status = payment.status
     payment.status = status
 
     order = db.session.get(Order, payment.order_id)
@@ -486,9 +488,41 @@ def update_payment_status(payment_id):
 
     db.session.commit()
 
+    notification = None
+    notification_error = None
+    if (
+        order
+        and previous_status != status
+        and status in ["paid", "failed", "refunded"]
+    ):
+        status_messages = {
+            "paid": ("Payment Successful", "Your payment for order"),
+            "failed": ("Payment Failed", "Payment for order"),
+            "refunded": ("Payment Refunded", "Your payment for order"),
+        }
+        title, message_prefix = status_messages[status]
+        notification, notification_error = create_payment_notification(
+            user_id=order.user_id,
+            order_id=order.id,
+            title=title,
+            message=(
+                f"{message_prefix} "
+                f"{order.order_number or f'#{order.id}'} is {status}."
+            ),
+            idempotency_key=f"pay-{order.id}-{status}",
+        )
+
+    if notification_error:
+        current_app.logger.error(
+            "Could not create payment notification for order %s: %s",
+            order.id if order else payment.order_id,
+            notification_error,
+        )
+
     return jsonify({
         "message": "Payment status updated successfully",
-        "payment": payment_to_dict(payment)
+        "payment": payment_to_dict(payment),
+        "notification_created": notification is not None,
     }), 200
 
 
@@ -524,6 +558,7 @@ def refund_payment(payment_id):
             "message": "Only paid payments can be refunded"
         }), 400
 
+    previous_status = payment.status
     payment.status = "refunded"
     payment.updated_at = datetime.utcnow()
 
@@ -534,7 +569,29 @@ def refund_payment(payment_id):
 
     db.session.commit()
 
+    notification = None
+    notification_error = None
+    if order and previous_status != "refunded":
+        notification, notification_error = create_payment_notification(
+            user_id=order.user_id,
+            order_id=order.id,
+            title="Payment Refunded",
+            message=(
+                f"Your payment for order "
+                f"{order.order_number or f'#{order.id}'} is refunded."
+            ),
+            idempotency_key=f"pay-{order.id}-refunded",
+        )
+
+    if notification_error:
+        current_app.logger.error(
+            "Could not create refund notification for order %s: %s",
+            order.id if order else payment.order_id,
+            notification_error,
+        )
+
     return jsonify({
         "message": "Payment refunded successfully",
-        "payment": payment_to_dict(payment)
+        "payment": payment_to_dict(payment),
+        "notification_created": notification is not None,
     }), 200

@@ -17,6 +17,12 @@ class CustomOrder(db.Model):
         nullable=False
     )
 
+    address_id = db.Column(
+        db.Integer,
+        db.ForeignKey("addresses.id"),
+        nullable=True
+    )
+
     product_id = db.Column(
         db.Integer,
         db.ForeignKey("products.id", ondelete="SET NULL"),
@@ -80,6 +86,11 @@ class CustomOrder(db.Model):
 
     user = db.relationship(
         "User",
+        backref=db.backref("custom_orders", lazy=True)
+    )
+
+    address = db.relationship(
+        "Address",
         backref=db.backref("custom_orders", lazy=True)
     )
 

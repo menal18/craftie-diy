@@ -522,9 +522,12 @@
 #         "message": "Order status updated successfully",
 #         "order": order_to_dict(order)
 #     }), 200
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from middleware.admin_required import admin_required
+from extensions import db
+from models.order import Order
+from services.notification_service import create_order_notification
 
 from services.order_service import (
     create_order,
@@ -714,6 +717,13 @@ def update_order_status_route(order_id):
             "message": "Invalid order status"
         }), 400
 
+    previous_order = db.session.get(Order, order_id)
+    previous_status = (
+        previous_order.order_status
+        if previous_order
+        else None
+    )
+
     order, error = update_order_status(
         order_id=order_id,
         new_status=new_status
@@ -724,7 +734,29 @@ def update_order_status_route(order_id):
             "message": error
         }), 400 if error != "Order not found" else 404
 
+    notification = None
+    notification_error = None
+    if previous_status != order.order_status:
+        notification, notification_error = create_order_notification(
+            user_id=order.user_id,
+            order_id=order.id,
+            title="Order Status Updated",
+            message=(
+                f"Your order {order.order_number or f'#{order.id}'} is now "
+                f"{order.order_status.replace('_', ' ')}."
+            ),
+            idempotency_key=f"ord-{order.id}-{order.order_status}",
+        )
+
+    if notification_error:
+        current_app.logger.error(
+            "Could not create status notification for order %s: %s",
+            order.id,
+            notification_error,
+        )
+
     return jsonify({
         "message": "Order status updated successfully",
-        "order": order_to_dict(order)
+        "order": order_to_dict(order),
+        "notification_created": notification is not None,
     }), 200

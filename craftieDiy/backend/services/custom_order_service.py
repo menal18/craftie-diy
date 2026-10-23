@@ -1,4 +1,5 @@
 from extensions import db
+from models.address import Address
 from models.custom_order import CustomOrder
 from models.product import Product
 from datetime import datetime
@@ -16,7 +17,8 @@ def create_custom_order(
     customization_details=None,
     reference_image_url=None,
     quantity=1,
-    product_id=None
+    product_id=None,
+    address_id=None
 ):
     """
     Create a new custom order request.
@@ -58,6 +60,25 @@ def create_custom_order(
     if quantity <= 0:
         return None, "Quantity must be greater than 0"
 
+    if isinstance(address_id, bool):
+        return None, "A valid delivery address is required"
+
+    try:
+        address_id = int(address_id)
+    except (ValueError, TypeError):
+        return None, "A valid delivery address is required"
+
+    if address_id <= 0:
+        return None, "A valid delivery address is required"
+
+    address = Address.query.filter_by(
+        id=address_id,
+        user_id=user_id
+    ).first()
+
+    if not address:
+        return None, "A valid delivery address is required"
+
     # -----------------------------------------------------
     # Validate product if provided
     # -----------------------------------------------------
@@ -81,6 +102,7 @@ def create_custom_order(
 
     custom_order = CustomOrder(
         user_id=user_id,
+        address_id=address.id,
         product_id=product_id,
         title=title,
         description=description,
@@ -349,6 +371,41 @@ def accept_custom_order(
         return None, str(e)
 
     return custom_order, None
+
+    
+# =========================================================
+# CUSTOMER REJECT QUOTATION
+# =========================================================
+
+def reject_custom_order(user_id, custom_order_id):
+    """
+    Customer rejects an admin quotation.
+    Only quoted custom orders can be rejected.
+    """
+
+    custom_order = get_user_custom_order(
+        user_id,
+        custom_order_id
+    )
+
+    if not custom_order:
+        return None, "Custom order not found"
+
+    if custom_order.status != "quoted":
+        return None, "Only quoted custom orders can be rejected"
+
+    custom_order.status = "rejected"
+    custom_order.updated_at = datetime.utcnow()
+
+    try:
+        db.session.commit()
+
+    except Exception as e:
+        db.session.rollback()
+        return None, str(e)
+
+    return custom_order, None
+
 
 
 # =========================================================

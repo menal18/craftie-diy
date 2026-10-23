@@ -319,7 +319,8 @@ def create_order_notification(
     user_id,
     order_id,
     title,
-    message
+    message,
+    idempotency_key=None
 ):
     """
     Create an order-related notification.
@@ -330,7 +331,8 @@ def create_order_notification(
         title=title,
         message=message,
         notification_type="order",
-        reference_id=order_id
+        reference_id=order_id,
+        idempotency_key=idempotency_key
     )
 
 
@@ -342,7 +344,8 @@ def create_payment_notification(
     user_id,
     order_id,
     title,
-    message
+    message,
+    idempotency_key=None
 ):
     """
     Create a payment-related notification.
@@ -353,7 +356,8 @@ def create_payment_notification(
         title=title,
         message=message,
         notification_type="payment",
-        reference_id=order_id
+        reference_id=order_id,
+        idempotency_key=idempotency_key
     )
 
 
@@ -365,7 +369,8 @@ def create_custom_order_notification(
     user_id,
     custom_order_id,
     title,
-    message
+    message,
+    idempotency_key=None
 ):
     """
     Create a custom-order-related notification.
@@ -376,7 +381,8 @@ def create_custom_order_notification(
         title=title,
         message=message,
         notification_type="custom_order",
-        reference_id=custom_order_id
+        reference_id=custom_order_id,
+        idempotency_key=idempotency_key
     )
 
 

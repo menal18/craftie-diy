@@ -35,3 +35,13 @@ export const acceptCustomOrderQuote = async (orderId) => {
   );
   return response.data;
 };
+
+
+
+export const rejectCustomOrderQuote = async (orderId) => {
+  const response = await api.put(
+    `/api/custom-orders/${orderId}/reject`
+  );
+  return response.data;
+};
+

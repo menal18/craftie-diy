@@ -15,6 +15,7 @@ from services.admin_service import (
     get_admin_profile,
     update_admin_profile
 )
+from services.address_service import get_user_address_display
 
 admin_bp = Blueprint(
     "admin",
@@ -170,6 +171,7 @@ def order_to_dict(order):
             "name": user.name if user else None,
             "email": user.email if user else None,
             "phone": user.phone if user else None,
+            "address": get_user_address_display(user),
         },
 
         # =====================================================
@@ -314,6 +316,24 @@ def custom_order_to_dict(order):
             "email": user.email if user else None,
             "phone": user.phone if user else None,
         },
+
+        "address_id": order.address_id,
+        "delivery_address": (
+            {
+                "id": order.address.id,
+                "full_name": order.address.full_name,
+                "phone": order.address.phone,
+                "address_line1": order.address.address_line1,
+                "address_line2": order.address.address_line2,
+                "city": order.address.city,
+                "state": order.address.state,
+                "postal_code": order.address.postal_code,
+                "country": order.address.country,
+                "address_type": order.address.address_type,
+            }
+            if order.address
+            else None
+        ),
 
         # =====================================================
         # PRODUCT

@@ -202,13 +202,20 @@
   border-color: #e8d69b;
 }
 
+.custom-order-status-select.quoted {
+  background: #fff6df;
+  color: #8a6500;
+  border-color: #e8d69b;
+}
+
 .custom-order-status-select.processing {
   background: #e9f0ff;
   color: #315d9e;
   border-color: #b9cbea;
 }
 
-.custom-order-status-select.completed {
+.custom-order-status-select.completed,
+.custom-order-status-select.accepted {
   background: #e8f6ed;
   color: #236b3b;
   border-color: #b9dec4;
@@ -351,6 +358,10 @@
   padding: 12px;
 }
 
+.custom-order-address-card {
+  grid-column: 1 / -1;
+}
+
 .custom-order-detail-grid span {
   display: block;
   color: var(--muted);
@@ -360,7 +371,8 @@
 
 .custom-order-detail-grid strong {
   color: var(--text);
-  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .custom-order-description {
@@ -372,19 +384,151 @@
   color: var(--text);
 }
 
+.custom-order-delivery-address-card {
+  padding: 14px;
+  border-radius: 9px;
+  background: var(--ivory);
+  color: var(--text);
+  overflow-wrap: anywhere;
+  line-height: 1.55;
+}
+
+.custom-order-delivery-address-card strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--primary);
+}
+
+.custom-order-delivery-address-card p {
+  margin: 3px 0;
+}
+
+.custom-order-delivery-address-card.missing {
+  color: var(--muted);
+}
+
+.custom-order-empty-price {
+  display: inline-block !important;
+  margin: 0 !important;
+  color: var(--muted) !important;
+  font-size: 14px !important;
+  font-weight: 500;
+}
+
+.custom-order-quote-form {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--ivory);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.custom-order-quote-form label {
+  display: block;
+  margin-top: 2px;
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.custom-order-quote-form input,
+.custom-order-quote-form textarea {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.custom-order-quote-form textarea {
+  min-height: 104px;
+  resize: vertical;
+}
+
+.custom-order-quote-form input:focus,
+.custom-order-quote-form textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(90, 11, 24, 0.12);
+}
+
+.custom-order-quote-form input:disabled,
+.custom-order-quote-form textarea:disabled {
+  background: var(--ivory);
+  cursor: wait;
+}
+
+.custom-order-quote-submit {
+  align-self: flex-start;
+  min-height: 42px;
+  margin-top: 4px;
+  padding: 10px 16px;
+  border: 1px solid var(--primary);
+  border-radius: 8px;
+  background: var(--primary);
+  color: var(--white);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.custom-order-quote-submit:hover:not(:disabled) {
+  border-color: var(--primary-dark);
+  background: var(--primary-dark);
+}
+
+.custom-order-quote-submit:focus-visible {
+  outline: 3px solid rgba(90, 11, 24, 0.2);
+  outline-offset: 2px;
+}
+
+.custom-order-quote-submit:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.custom-order-quote-form .custom-order-alert {
+  margin: 2px 0 0;
+}
 
 .custom-order-reference-image {
   display: block;
+  width: auto;
   max-width: 220px;
   max-height: 320px;
   object-fit: contain;
   cursor: zoom-in;
   border-radius: 6px;
+  background: var(--ivory);
   transition: transform 0.2s ease;
 }
 
 .custom-order-reference-image:hover {
   transform: scale(1.02);
+}
+
+.custom-order-image-placeholder {
+  padding: 14px;
+  border: 1px dashed var(--border);
+  border-radius: 9px;
+  background: var(--ivory);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .image-preview-hint {
@@ -461,8 +605,17 @@
 }
 
 @media (max-width: 600px) {
+  .custom-order-modal-overlay {
+    padding: 10px;
+  }
+
   .custom-order-summary-grid {
     grid-template-columns: 1fr;
+  }
+
+  .custom-order-modal-header,
+  .custom-order-details {
+    padding: 16px;
   }
 
   .custom-order-detail-grid {
@@ -470,6 +623,14 @@
   }
 
   .custom-order-modal {
-    max-height: 94vh;
+    max-height: 96vh;
+  }
+
+  .custom-order-quote-form {
+    padding: 13px;
+  }
+
+  .custom-order-quote-submit {
+    align-self: stretch;
   }
 }

@@ -315,6 +315,39 @@ def get_user_addresses(user_id):
     ).all()
 
 
+def get_user_address_display(user):
+    if not user:
+        return None
+
+    addresses = user.addresses
+    if not addresses:
+        return None
+
+    address = next(
+        (item for item in addresses if item.is_default),
+        None
+    )
+    if address is None:
+        address = max(
+            addresses,
+            key=lambda item: item.updated_at or item.created_at
+        )
+
+    parts = (
+        address.address_line1,
+        address.address_line2,
+        address.city,
+        address.state,
+        address.postal_code,
+        address.country,
+    )
+    return ", ".join(
+        part.strip()
+        for part in parts
+        if isinstance(part, str) and part.strip()
+    ) or None
+
+
 # =========================================================
 # GET SINGLE ADDRESS
 # =========================================================
