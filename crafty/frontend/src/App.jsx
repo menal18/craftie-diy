@@ -1,5 +1,6 @@
 
 
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
@@ -40,6 +41,17 @@ import AdminCustomOrders from "./pages/admin/AdminCustomOrders";
 import AdminContactMessages from "./pages/admin/AdminContactMessages";
 import AdminNotifications from "./pages/admin/AdminNotifications";
 import AdminSettings from "./pages/admin/AdminSettings";
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, [pathname]);
+
+  return null;
+}
+
 function AppContent() {
   const location = useLocation();
 
@@ -47,6 +59,7 @@ function AppContent() {
 
   return (
     <div className="app-layout">
+      <ScrollToTop />
       {!isAdminPage && <Navbar />}
 
       <div className="main-content">
