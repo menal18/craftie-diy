@@ -46,10 +46,11 @@ function AppContent() {
   const isAdminPage = location.pathname.startsWith("/admin");
 
   return (
-    <>
+    <div className="app-layout">
       {!isAdminPage && <Navbar />}
 
-      <Routes>
+      <div className="main-content">
+        <Routes>
 
         {/* =========================
             CUSTOMER ROUTES
@@ -201,10 +202,11 @@ function AppContent() {
 />
         </Route>
 
-      </Routes>
+        </Routes>
+      </div>
 
       {!isAdminPage && <Footer />}
-    </>
+    </div>
   );
 }
 

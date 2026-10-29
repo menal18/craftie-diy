@@ -1,231 +1,3 @@
-// import { useEffect, useState } from "react";
-// import { Heart, ShoppingBag, Search, SlidersHorizontal } from "lucide-react";
-// import { Link, useSearchParams } from "react-router-dom";
-
-// import { getProducts } from "../services/productService";
-// import { getCategories } from "../services/categoryService";
-
-// import "./Shop.css";
-
-// function Shop() {
-//   const [searchParams, setSearchParams] = useSearchParams();
-//   const categoryFromUrl = searchParams.get("category");
-
-//   const [products, setProducts] = useState([]);
-//   const [categories, setCategories] = useState([]);
-
-//   const [search, setSearch] = useState("");
-//   const selectedCategory = categoryFromUrl || "all";
-//   const [sort, setSort] = useState("default");
-
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState("");
-
-//   useEffect(() => {
-//     let isCurrent = true;
-
-//     Promise.all([getProducts(), getCategories()])
-//       .then(([productsData, categoriesData]) => {
-//         const productList = Array.isArray(productsData)
-//           ? productsData
-//           : productsData.products || [];
-
-//         const categoryList = Array.isArray(categoriesData)
-//           ? categoriesData
-//           : categoriesData.categories || [];
-
-//         if (isCurrent) {
-//           setProducts(productList);
-//           setCategories(categoryList);
-//         }
-//       })
-//       .catch((err) => {
-//         console.error("Shop API error:", err);
-//         if (isCurrent) {
-//           setError("Unable to load products. Please try again.");
-//         }
-//       })
-//       .finally(() => {
-//         if (isCurrent) {
-//           setLoading(false);
-//         }
-//       });
-
-//     return () => {
-//       isCurrent = false;
-//     };
-//   }, []);
-
-//   const filteredProducts = products
-//     .filter((product) => {
-//       const searchText = search.toLowerCase().trim();
-
-//       if (!searchText) return true;
-
-//       return (
-//         product.name?.toLowerCase().includes(searchText) ||
-//         product.description?.toLowerCase().includes(searchText)
-//       );
-//     })
-//     .filter((product) => {
-//       if (selectedCategory === "all") return true;
-
-//       return String(product.category_id) === String(selectedCategory);
-//     })
-//     .sort((a, b) => {
-//       if (sort === "price-low") {
-//         return Number(a.price) - Number(b.price);
-//       }
-
-//       if (sort === "price-high") {
-//         return Number(b.price) - Number(a.price);
-//       }
-
-//       if (sort === "name") {
-//         return (a.name || "").localeCompare(b.name || "");
-//       }
-
-//       return 0;
-//     });
-
-//   const selectedCategoryName = categories.find(
-//     (category) => String(category.id) === String(selectedCategory),
-//   )?.name;
-
-//   return (
-//     <main className="shop-page">
-//       {/* PAGE HEADER */}
-//       <section className="shop-header">
-//         <div className="shop-header-content">
-//           <span>CRAFTIEDIY COLLECTION</span>
-
-//           <h1>{selectedCategoryName || "Shop All Creations"}</h1>
-
-//           <p>
-//             Explore our collection of thoughtful handmade gifts and beautiful
-//             handcrafted creations.
-//           </p>
-//         </div>
-//       </section>
-
-//       {/* SHOP CONTENT */}
-//       <section className="shop-content">
-//         {/* FILTER BAR */}
-//         <div className="shop-toolbar">
-//           <div className="shop-result-count">
-//             <SlidersHorizontal size={16} />
-//             <span>{filteredProducts.length} Products</span>
-//           </div>
-
-//           <div className="shop-search">
-//             <Search size={17} />
-
-//             <input
-//               type="text"
-//               placeholder="Search products..."
-//               value={search}
-//               onChange={(e) => setSearch(e.target.value)}
-//             />
-//           </div>
-
-//           <select
-//             className="category-select"
-//             value={selectedCategory}
-//             onChange={(event) => {
-//               const categoryId = event.target.value;
-//               setSearchParams(
-//                 categoryId === "all" ? {} : { category: categoryId },
-//               );
-//             }}
-//           >
-//             <option value="all">All Categories</option>
-
-//             {categories.map((category) => (
-//               <option key={category.id} value={category.id}>
-//                 {category.name}
-//               </option>
-//             ))}
-//           </select>
-
-//           <select
-//             className="sort-select"
-//             value={sort}
-//             onChange={(e) => setSort(e.target.value)}
-//           >
-//             <option value="default">Sort By</option>
-//             <option value="price-low">Price: Low to High</option>
-//             <option value="price-high">Price: High to Low</option>
-//             <option value="name">Name</option>
-//           </select>
-//         </div>
-
-//         {/* PRODUCTS */}
-//         {loading ? (
-//           <div className="shop-message">Loading products...</div>
-//         ) : error ? (
-//           <div className="shop-message shop-error">{error}</div>
-//         ) : filteredProducts.length === 0 ? (
-//           <div className="shop-message">No products found.</div>
-//         ) : (
-//           <div className="shop-grid">
-//             {filteredProducts.map((product) => (
-//               <article className="shop-product-card" key={product.id}>
-//                 <Link
-//                   to={`/product/${product.id}`}
-//                   className="shop-product-image"
-//                 >
-//                   {product.image_url ? (
-//                     <img src={product.image_url} alt={product.name} />
-//                   ) : (
-//                     <div className="shop-image-placeholder">
-//                       <ShoppingBag size={32} />
-//                     </div>
-//                   )}
-
-//                   <button
-//                     type="button"
-//                     className="shop-wishlist"
-//                     aria-label={`Add ${product.name} to wishlist`}
-//                     onClick={(event) => {
-//                       event.preventDefault();
-//                     }}
-//                   >
-//                     <Heart size={19} />
-//                   </button>
-
-//                   <div className="shop-view-product">View Product</div>
-//                 </Link>
-
-//                 <div className="shop-product-info">
-//                   {product.category?.name && (
-//                     <span className="shop-product-category">
-//                       {product.category.name}
-//                     </span>
-//                   )}
-
-//                   <h2>{product.name}</h2>
-
-//                   {product.description && <p>{product.description}</p>}
-
-//                   <div className="shop-product-bottom">
-//                     <strong>₹{Number(product.price).toFixed(2)}</strong>
-
-//                     <button type="button" className="shop-cart-button">
-//                       Add to Cart
-//                     </button>
-//                   </div>
-//                 </div>
-//               </article>
-//             ))}
-//           </div>
-//         )}
-//       </section>
-//     </main>
-//   );
-// }
-
-// export default Shop;
-
 
 import { useEffect, useState } from "react";
 import {
@@ -235,7 +7,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
-
+import { Helmet } from "react-helmet-async";
 import { getProducts } from "../services/productService";
 import { getCategories } from "../services/categoryService";
 import { addToCart } from "../services/cartService";
@@ -568,6 +340,14 @@ function Shop() {
 
   return (
     <main className="shop-page">
+
+         <Helmet>
+      <title>Shop Handmade Crafts | Craftie DIY</title>
+      <meta
+        name="description"
+        content="Explore handmade crafts, creative gifts and unique DIY products at Craftie DIY."
+      />
+    </Helmet>
 
       {/* =====================================
           HEADER
